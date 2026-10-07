@@ -5,3 +5,5 @@ psycopg[binary]==3.3.6
 # Needed to work on the API
 pytest==9.1.1
 httpx2==2.13.1
+ruff==0.16.10
+pip-audit==2.10.1
