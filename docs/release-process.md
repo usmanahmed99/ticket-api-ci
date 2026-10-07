@@ -36,3 +36,26 @@ Releases are Git tags on `main` (or on a hotfix branch): `v1.1.0`, `v1.2.0`, `v1
 4. A reviewer approves the **production** deployment in GitHub. The same digest goes to production and is smoke-checked again.
 
 Nothing is built again after step 2. Staging and production run the same image; only their settings differ.
+
+## Hotfix
+
+Use a hotfix when production has a bug that cannot wait for the next normal release, and `main` already has changes that are not ready.
+
+1. Make the branch from the tag that production runs: `git switch -c hotfix/1.2.1 v1.2.0`.
+2. Write a test that fails because of the bug. Then fix it, with the smallest change. Change the version (`1.2.1`) and write `docs/releases/1.2.1.md`.
+3. Push the branch. CI runs every check and builds the image. **No check is skipped for a hotfix.**
+4. Tag the commit (`v1.2.1`) and push the tag. The Release workflow tags the image that CI built.
+5. Deploy that digest with the Deploy workflow (**Run workflow**, with the digest and the reason). It goes through staging, then production after approval.
+6. Merge the hotfix branch into `main` with a pull request, so the next release keeps the fix.
+
+## Rollback
+
+| What went wrong | What to roll back | How | Time in the test run |
+|---|---|---|---|
+| The new code | The application | Deploy the previous digest with the Deploy workflow | about 2 minutes, through staging |
+| The new model or a new feature behind a flag | Only the flag | `az containerapp update --set-env-vars CLASSIFIER_VERSION=1.0` | under 1 minute |
+| Data that a release wrote wrongly | Nothing: repair forward | A new migration that corrects the data (for example `003_backfill_score`) | one migration |
+
+A rollback of the application does not change the database. Every migration must keep the previous version working (expand first, contract later), so a rollback stays possible. Restore a database backup only when data is lost, and say what is lost since the backup.
+
+Before a rollback, check what it takes away: rolling back from 1.2.x to 1.1.0 removes `score` from the responses, and turns off keywords-1.1, because 1.1.0 does not know the flag.
