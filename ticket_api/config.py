@@ -16,6 +16,7 @@ class Settings:
     log_level: str
     show_docs: bool
     database_url: str | None = field(default=None, repr=False)
+    classifier_version: str = "1.0"
 
 
 def read_secret(name: str) -> str | None:
@@ -40,6 +41,7 @@ def load_settings() -> Settings:
         log_level=os.environ.get("LOG_LEVEL", "INFO").upper(),
         show_docs=os.environ.get("SHOW_DOCS", "true").lower() == "true",
         database_url=read_secret("DATABASE_URL"),
+        classifier_version=os.environ.get("CLASSIFIER_VERSION", "1.0"),
     )
     if os.environ.get("REQUIRE_API_KEY", "false").lower() == "true" and not settings.api_key:
         raise SettingsError("REQUIRE_API_KEY is true, but API_KEY is not set")

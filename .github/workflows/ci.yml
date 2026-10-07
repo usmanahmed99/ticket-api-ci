@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Lint, test, audit
+    name: Lint, test, audit, evaluate
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -37,6 +37,8 @@ jobs:
         run: python -m pytest --junitxml=reports/junit.xml
       - name: Security - known vulnerabilities in the image's packages
         run: pip-audit -r requirements-run.txt --progress-spinner off
+      - name: AI evaluation gate
+        run: python -m evaluation.run --classifier 1.1
       - name: Keep the test and evaluation reports
         if: always()
         uses: actions/upload-artifact@v7
