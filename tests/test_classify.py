@@ -17,6 +17,7 @@ def test_billing_ticket(client):
         "category": "billing",
         "priority": 1,
         "confidence": 0.9,
+        "score": 0.9,
         "model_version": "keywords-1.0",
     }
 
@@ -99,6 +100,11 @@ def test_classifier_version_flag(make_client):
     response = client.post("/v1/classify", json={"subject": "Package never arrived"})
     assert response.json()["category"] == "shipping"
     assert response.json()["model_version"] == "keywords-1.1"
+
+
+def test_score_and_deprecated_confidence_are_equal(client):
+    body = client.post("/v1/classify", json={"subject": "Refund"}).json()
+    assert body["score"] == body["confidence"]
 
 
 def test_classifier_1_0_is_the_default(client):

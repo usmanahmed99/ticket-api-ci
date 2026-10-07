@@ -15,6 +15,7 @@ RUN pip install -r requirements-run.txt
 
 COPY pyproject.toml .
 COPY ticket_api ./ticket_api
+COPY migrations ./migrations
 
 USER app
 

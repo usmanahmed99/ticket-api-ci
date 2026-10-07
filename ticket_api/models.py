@@ -39,6 +39,7 @@ class Classification(BaseModel):
                     "category": "billing",
                     "priority": 1,
                     "confidence": 0.9,
+                    "score": 0.9,
                     "model_version": "keywords-1.0",
                 }
             ]
@@ -48,8 +49,12 @@ class Classification(BaseModel):
     category: Category = Field(description="The team that should handle the ticket.")
     priority: int = Field(ge=1, le=3, description="1 is the most urgent, 3 the least.")
     confidence: float = Field(
-        ge=0, le=1, description="How sure the classifier is, from 0 to 1."
+        ge=0,
+        le=1,
+        description="Deprecated: use score. The same value. Removed in version 2.0.",
+        json_schema_extra={"deprecated": True},
     )
+    score: float = Field(ge=0, le=1, description="How sure the classifier is, from 0 to 1.")
     model_version: str = Field(description="The classifier that made the prediction.")
 
 
@@ -66,6 +71,7 @@ class HistoryItem(BaseModel):
     category: Category
     priority: int = Field(ge=1, le=3)
     confidence: float = Field(ge=0, le=1)
+    score: float = Field(ge=0, le=1)
     model_version: str
     created_at: datetime = Field(description="When the API made it (UTC).")
 

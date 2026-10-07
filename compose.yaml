@@ -6,7 +6,7 @@
 services:
   api:
     build: .
-    image: ticket-api:1.1.0
+    image: ticket-api:1.2.0
     ports:
       - "127.0.0.1:8000:8000"
     environment:
@@ -15,6 +15,15 @@ services:
       REQUIRE_API_KEY: "true"
     secrets:
       - api_key
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    image: ticket-api:1.2.0
+    command: ["python", "-m", "ticket_api.migrate"]
+    environment:
+      DATABASE_URL: postgresql://tickets:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/tickets
     depends_on:
       db:
         condition: service_healthy
