@@ -6,6 +6,9 @@ name: ticket-api-${ENVIRONMENT:?Set ENVIRONMENT}
 services:
   api:
     image: ${IMAGE:?Set IMAGE to the image name with its digest}
+    # The pipeline builds for the cloud's processors. On Apple silicon (arm64),
+    # Docker Desktop emulates them, so you run the same build as the cloud.
+    platform: linux/amd64
     ports:
       - "127.0.0.1:${PORT:?Set PORT}:8000"
     environment:
@@ -27,6 +30,7 @@ services:
 
   migrate:
     image: ${IMAGE}
+    platform: linux/amd64
     command: ["python", "-m", "ticket_api.migrate"]
     environment:
       DATABASE_URL: postgresql://tickets:${POSTGRES_PASSWORD}@db:5432/tickets
