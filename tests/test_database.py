@@ -36,7 +36,7 @@ def test_migrations_apply_once(database, capsys):
     assert migrate.main([]) == 0
     out = capsys.readouterr().out
     assert out.count("applied  002_add_score") == 1
-    assert "Database is up to date (2 migrations)." in out
+    assert "Database is up to date (3 migrations)." in out
 
 
 def test_history_round_trip(database):
