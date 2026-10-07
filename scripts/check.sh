@@ -15,6 +15,9 @@ python -m pytest -q --junitxml=reports/junit.xml
 step "Security: known vulnerabilities in the image's packages"
 pip-audit -r requirements-run.txt --progress-spinner off
 
+step "AI evaluation gate"
+python -m evaluation.run --classifier 1.1
+
 step "Build the image"
 docker build -q -t ticket-api:check . >/dev/null
 

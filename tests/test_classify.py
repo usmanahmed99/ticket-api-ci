@@ -92,3 +92,15 @@ def test_ready_and_not_ready(make_client):
     assert make_client().get("/ready").status_code == 200
     not_ready = make_client(classifier_mode="unavailable").get("/ready")
     assert not_ready.status_code == 503
+
+
+def test_classifier_version_flag(make_client):
+    client = make_client(classifier_version="1.1")
+    response = client.post("/v1/classify", json={"subject": "Package never arrived"})
+    assert response.json()["category"] == "shipping"
+    assert response.json()["model_version"] == "keywords-1.1"
+
+
+def test_classifier_1_0_is_the_default(client):
+    response = client.post("/v1/classify", json={"subject": "Package never arrived"})
+    assert response.json()["model_version"] == "keywords-1.0"

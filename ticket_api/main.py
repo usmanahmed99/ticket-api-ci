@@ -49,7 +49,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         logger.warning(
             "API_KEY is not set: /v1/classify accepts requests without a key"
         )
-    app.state.classifier = make_classifier(settings.classifier_mode)
+    app.state.classifier = make_classifier(
+        settings.classifier_mode, settings.classifier_version
+    )
     app.state.history = None
     if settings.database_url:
         app.state.history = History(settings.database_url)
