@@ -47,8 +47,9 @@ class History:
     def recent(self, limit: int) -> list[dict]:
         with self.connect() as conn:
             return conn.execute(
-                "SELECT request_id, category, priority, confidence, score,"
-                " model_version, created_at"
+                # Rows from version 1.1.0 have no score: use confidence.
+                "SELECT request_id, category, priority, confidence,"
+                " COALESCE(score, confidence) AS score, model_version, created_at"
                 " FROM classifications ORDER BY id DESC LIMIT %s",
                 (limit,),
             ).fetchall()

@@ -33,7 +33,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="Ticket Classifier API",
-        version="1.2.0",
+        version="1.2.1",
         description=DESCRIPTION,
         openapi_tags=[
             {"name": "tickets", "description": "Classify support tickets."},

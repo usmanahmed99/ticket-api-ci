@@ -12,7 +12,7 @@ check() {  # name, expected status, curl arguments...
   local name=$1 expected=$2; shift 2
   local status
   status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$@")
-  if [ "$status" = "$expected" ]; then
+  if [[ "$status" =~ ^($expected)$ ]]; then
     echo "ok    $name ($status)"
   else
     echo "FAIL  $name: expected $expected, got $status"
@@ -26,5 +26,7 @@ check "classify with the key" 200 -X POST "$url/v1/classify" \
   -H 'Content-Type: application/json' -H "X-API-Key: $key" -d '{"subject":"Parcel lost"}'
 check "classify without a key" 401 -X POST "$url/v1/classify" \
   -H 'Content-Type: application/json' -d '{"subject":"Parcel lost"}'
+# 200 with a database, 503 when history is off. A 500 is a bug (as in 1.2.0).
+check "history" "200|503" "$url/v1/history" -H "X-API-Key: $key"
 
 exit $failed

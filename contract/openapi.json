@@ -3,7 +3,7 @@
   "info": {
     "title": "Ticket Classifier API",
     "description": "\nClassifies support tickets into a category and a priority.\n\nThe classifier is a deterministic mock: it uses keywords, so the same text\nalways gives the same result. Every error has the same shape:\n`{\"error\": {\"code\": ..., \"message\": ..., \"request_id\": ..., \"fields\": [...]}}`.\n",
-    "version": "1.2.0"
+    "version": "1.2.1"
   },
   "paths": {
     "/v1/categories": {

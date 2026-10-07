@@ -46,3 +46,16 @@ def test_history_round_trip(database):
     [row] = history.recent(10)
     assert row["category"] == "billing"
     assert row["score"] == pytest.approx(0.7)
+
+
+def test_history_reads_rows_from_version_1_1(database):
+    """Version 1.1.0 writes no score. 1.2.0 failed with 500 on such rows."""
+    migrate.main([])
+    with psycopg.connect(database, autocommit=True) as conn:
+        conn.execute(
+            "INSERT INTO classifications"
+            " (request_id, category, priority, confidence, model_version)"
+            " VALUES ('old111', 'shipping', 1, 0.7, 'keywords-1.0')"
+        )
+    [row] = History(database).recent(10)
+    assert row["score"] == pytest.approx(0.7)
