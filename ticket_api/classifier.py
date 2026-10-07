@@ -18,7 +18,8 @@ KEYWORDS_1_1 = {
     "shipping": KEYWORDS["shipping"] + ("package", "arrived", "delivered", "shipment"),
     "account": KEYWORDS["account"] + ("email address", "profile", "delete my"),
 }
-URGENT_WORDS_1_1 = URGENT_WORDS + ("can't sign", "never arrived", "urgent")
+# "lost" made "I lost my password" urgent, so keywords-1.1 does not use it.
+URGENT_WORDS_1_1 = ("cannot", "locked out", "charged twice", "can't sign", "never arrived", "urgent")
 
 class ClassifierUnavailable(Exception):
     """The classifier cannot answer now. The request may work later."""
