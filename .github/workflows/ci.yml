@@ -1,14 +1,14 @@
 # Continuous integration: check every change, then build one image per commit.
 # Pull requests: checks and a test build (nothing is pushed).
-# main, hotfix/* and version tags: checks, then build, smoke-test and push the
-# image to GitHub Container Registry, with build evidence.
+# main and hotfix/*: checks, then build, smoke-test and push the image to
+# GitHub Container Registry, with build evidence. A version tag does not build
+# again: release.yml tags the image that this workflow built.
 name: CI
 
 on:
   pull_request:
   push:
     branches: [main, "hotfix/**"]
-    tags: ["v*"]
 
 permissions:
   contents: read
@@ -70,7 +70,6 @@ jobs:
           images: ${{ env.IMAGE }}
           tags: |
             type=sha,prefix=sha-
-            type=semver,pattern={{version}}
       - name: Build (and keep it here for the smoke test)
         uses: docker/build-push-action@v7
         with:
