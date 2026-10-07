@@ -86,7 +86,7 @@ jobs:
       - name: Smoke-test the image before it leaves this runner
         run: |
           docker run -d --name candidate -p 127.0.0.1:8000:8000 -e API_KEY=ci-smoke-key ticket-api:candidate
-          for _ in $(seq 1 30); do curl -fs http://127.0.0.1:8000/health && break; sleep 1; done
+          for _ in $(seq 1 30); do curl -fs -o /dev/null http://127.0.0.1:8000/health && break; sleep 1; done
           scripts/smoke.sh http://127.0.0.1:8000 ci-smoke-key
       - name: Sign in to GitHub Container Registry
         if: env.PUSH == 'true'
