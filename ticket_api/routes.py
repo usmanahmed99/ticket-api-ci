@@ -1,7 +1,6 @@
 import asyncio
-from typing import Annotated, get_args
-
 import logging
+from typing import Annotated, get_args
 
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.concurrency import run_in_threadpool

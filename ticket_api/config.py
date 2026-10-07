@@ -25,7 +25,7 @@ def read_secret(name: str) -> str | None:
         try:
             return Path(path).read_text(encoding="utf-8").strip() or None
         except OSError as error:
-            raise SettingsError(f"{name}_FILE: cannot read {path}: {error.strerror}")
+            raise SettingsError(f"{name}_FILE: cannot read {path}: {error.strerror}") from None
     return os.environ.get(name) or None
 
 
