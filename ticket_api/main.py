@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ticket_api.classifier import make_classifier
 from ticket_api.config import Settings, SettingsError, load_settings
 from ticket_api.errors import add_error_handlers, error_response
-from ticket_api.history import History, HistoryUnavailable
+from ticket_api.history import History
 from ticket_api.models import ErrorResponse, Health, Readiness
 from ticket_api.routes import router
 
@@ -33,7 +33,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="Ticket Classifier API",
-        version="1.1.0",
+        version="1.2.0",
         description=DESCRIPTION,
         openapi_tags=[
             {"name": "tickets", "description": "Classify support tickets."},
@@ -55,10 +55,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.history = None
     if settings.database_url:
         app.state.history = History(settings.database_url)
-        try:
-            app.state.history.setup()
-        except HistoryUnavailable:
-            logger.warning("the database does not answer yet: history is not ready")
     else:
         logger.info("DATABASE_URL is not set: history is off")
 

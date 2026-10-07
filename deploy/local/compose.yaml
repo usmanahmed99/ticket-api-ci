@@ -1,5 +1,5 @@
-# One environment (staging or production) on your computer: the API and its
-# own database. The image is given by digest, so every
+# One environment (staging or production) on your computer: the API, its
+# migrations and its own database. The image is given by digest, so every
 # environment runs exactly the same build. Start it with scripts/promote-local.sh.
 name: ticket-api-${ENVIRONMENT:?Set ENVIRONMENT}
 
@@ -21,6 +21,15 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    image: ${IMAGE}
+    command: ["python", "-m", "ticket_api.migrate"]
+    environment:
+      DATABASE_URL: postgresql://tickets:${POSTGRES_PASSWORD}@db:5432/tickets
     depends_on:
       db:
         condition: service_healthy

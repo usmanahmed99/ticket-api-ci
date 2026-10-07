@@ -73,6 +73,7 @@ async def classify(
         category=prediction.category,
         priority=prediction.priority,
         confidence=prediction.confidence,
+        score=prediction.confidence,
         model_version=classifier.version,
     )
     history = request.app.state.history
